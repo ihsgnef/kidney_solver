@@ -1,15 +1,10 @@
-"""
-IP formulations for kidney exchange, including PICEF
-"""
-
 import argparse
 import time
 import sys
-
-import kidney_digraph
+import kidney_ndds
 import kidney_ip
 import kidney_utils
-import kidney_ndds
+from dynamic_kidney_graph import DynamicKidneyGraph
 
 def solve_kep(cfg, formulation, use_relabelled=True):
 
@@ -38,7 +33,8 @@ def solve_kep(cfg, formulation, use_relabelled=True):
     else:
         raise ValueError("Unrecognised IP formulation name")
 
-def start():
+
+if __name__ == '__main__':
     parser = argparse.ArgumentParser("Solve a kidney-exchange instance")
     parser.add_argument("cycle_cap", type=int,
             help="The maximum permitted cycle length")
@@ -71,42 +67,41 @@ def start():
             
     args = parser.parse_args()
     args.formulation = args.formulation.lower()
-
     input_lines = [line for line in sys.stdin if len(line.strip()) > 0]
     n_digraph_edges = int(input_lines[0].split()[1])
     digraph_lines = input_lines[:n_digraph_edges + 2]
+    digraph_edges = []
+    for line in digraph_lines[1 : n_digraph_edges + 1]:
+        tokens = [x for x in line.split()]
+        source = int(tokens[0])
+        target = int(tokens[1])
+        score = float(tokens[2])
+        digraph_edges.append((source, target, score))
+    graph = DynamicKidneyGraph(digraph_edges)
 
-    d = kidney_digraph.read_digraph(digraph_lines)
-    print len(d.find_cycles(3))
-
-    '''
     if len(input_lines) > len(digraph_lines):
         ndd_lines = input_lines[n_digraph_edges + 2:]
-        altruists = kidney_ndds.read_ndds(ndd_lines, d)
+        altruists = kidney_ndds.read_ndds(ndd_lines, graph.digraph)
     else:
         altruists = []
-        
+
     start_time = time.time()
-    cfg = kidney_ip.OptConfig(d, altruists, args.cycle_cap, args.chain_cap, args.verbose,
+    cfg = kidney_ip.OptConfig(graph.digraph, altruists, args.cycle_cap, args.chain_cap, args.verbose,
                               args.timelimit, args.edge_success_prob, args.eef_alt_constraints,
                               args.lp_file, args.relax)
     opt_solution = solve_kep(cfg, args.formulation, args.use_relabelled)
     time_taken = time.time() - start_time
-    print "formulation: {}".format(args.formulation)
-    print "formulation_name: {}".format(opt_solution.formulation_name)
-    print "using_relabelled: {}".format(args.use_relabelled)
-    print "cycle_cap: {}".format(args.cycle_cap)
-    print "chain_cap: {}".format(args.chain_cap)
-    print "edge_success_prob: {}".format(args.edge_success_prob)
-    print "ip_time_limit: {}".format(args.timelimit)
-    print "ip_vars: {}".format(opt_solution.ip_model.numVars)
-    print "ip_constrs: {}".format(opt_solution.ip_model.numConstrs)
-    print "total_time: {}".format(time_taken)
-    print "ip_solve_time: {}".format(opt_solution.ip_model.runtime)
-    print "solver_status: {}".format(opt_solution.ip_model.status)
-    print "total_score: {}".format(opt_solution.total_score)
+    # print "formulation: {}".format(args.formulation)
+    # print "formulation_name: {}".format(opt_solution.formulation_name)
+    # print "using_relabelled: {}".format(args.use_relabelled)
+    # print "cycle_cap: {}".format(args.cycle_cap)
+    # print "chain_cap: {}".format(args.chain_cap)
+    # print "edge_success_prob: {}".format(args.edge_success_prob)
+    # print "ip_time_limit: {}".format(args.timelimit)
+    # print "ip_vars: {}".format(opt_solution.ip_model.numVars)
+    # print "ip_constrs: {}".format(opt_solution.ip_model.numConstrs)
+    # print "total_time: {}".format(time_taken)
+    # print "ip_solve_time: {}".format(opt_solution.ip_model.runtime)
+    # print "solver_status: {}".format(opt_solution.ip_model.status)
+    # print "total_score: {}".format(opt_solution.total_score)
     opt_solution.display()
-    '''
-
-if __name__=="__main__":
-    start()
