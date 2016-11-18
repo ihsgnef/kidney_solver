@@ -207,7 +207,7 @@ class Digraph:
 
     def __str__(self):
         return "\n".join([str(v) for v in self.vs])
-        
+
 def read_digraph(lines):
     """Reads a digraph from an array of strings in the input format."""
 
@@ -234,3 +234,18 @@ def read_digraph(lines):
 
     return digraph
 
+def get_vertices_from_edges(digraph_edges):
+    vertices = set([e[0] for e in digraph_edges])
+    vertices.update([e[1] for e in digraph_edges])
+    vertices = list(vertices)
+    return vertices
+
+def read_edges(edges):
+    vertices = get_vertices_from_edges(edges)
+    digraph = Digraph(100)
+    for edge in edges:
+        src, trg, score = edge
+        if digraph.edge_exists(digraph.vs[src], digraph.vs[trg]):
+            raise Exception('Duplicate edge!')
+        digraph.add_edge(score, digraph.vs[src], digraph.vs[trg])
+    return digraph

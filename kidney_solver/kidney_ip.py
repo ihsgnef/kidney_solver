@@ -64,6 +64,9 @@ class OptSolution(object):
         self.digraph = digraph
         self.total_score = (sum(c.score for c in chains) +
                 sum(failure_aware_cycle_score(c, digraph, edge_success_prob) for c in cycles))
+        self.cycle_scores = [failure_aware_cycle_score(c, digraph,
+            edge_success_prob) for c in cycles]
+        self.chain_scores = [c.score for c in chains]
         self.edge_success_prob = edge_success_prob
 
     def display(self):
