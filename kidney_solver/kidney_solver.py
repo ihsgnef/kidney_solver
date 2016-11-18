@@ -82,7 +82,6 @@ def start():
         digraph_edges.append((source, target, score))
     d = kidney_digraph.read_edges(digraph_edges)
 
-    '''
     ndd_edges = []
     ndd_lines = open('example_data/ndds').readlines()
     for line in ndd_lines:
@@ -91,17 +90,16 @@ def start():
         target = int(tokens[1])
         score = float(tokens[2])
         ndd_edges.append((source, target, score))
-    '''
 
-    # altruists = []
-    # altruists = kidney_ndds.read_ndds(ndd_lines, d)
+    altruists = []
+    altruists = kidney_ndds.read_ndd_edges(ndd_edges, d)
         
     # start_time = time.time()
-    # cfg = kidney_ip.OptConfig(d, altruists, args.cycle_cap, args.chain_cap, 
-    #         args.verbose, args.timelimit, args.edge_success_prob, 
-    #         args.eef_alt_constraints, args.lp_file, args.relax)
+    cfg = kidney_ip.OptConfig(d, altruists, args.cycle_cap, args.chain_cap, 
+            args.verbose, args.timelimit, args.edge_success_prob, 
+            args.eef_alt_constraints, args.lp_file, args.relax)
 
-    # opt_solution = solve_kep(cfg, args.formulation, args.use_relabelled)
+    opt_solution = solve_kep(cfg, args.formulation, args.use_relabelled)
     '''
     time_taken = time.time() - start_time
     print "formulation: {}".format(args.formulation)
@@ -118,7 +116,7 @@ def start():
     print "solver_status: {}".format(opt_solution.ip_model.status)
     print "total_score: {}".format(opt_solution.total_score)
     '''
-    # opt_solution.display()
+    opt_solution.display()
 
 if __name__=="__main__":
     start()

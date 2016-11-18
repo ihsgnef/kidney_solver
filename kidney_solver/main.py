@@ -101,7 +101,6 @@ if __name__ == '__main__':
         digraph_edges.append((source, target, score))
 
     ndd_edges = []
-    '''
     ndd_lines = open('example_data/ndds').readlines()
     for line in ndd_lines:
         tokens = [x for x in line.split()]
@@ -109,15 +108,14 @@ if __name__ == '__main__':
         target = int(tokens[1])
         score = float(tokens[2])
         ndd_edges.append((source, target, score))
-    '''
     graph = DynamicKidneyGraph(digraph_edges, ndd_edges)
+    ndds = [value for key, value in graph.ndds.items()]
 
-
-    # cfg = kidney_ip.OptConfig(graph.digraph, graph.ndds, args.cycle_cap, 
-    #                           args.chain_cap, args.verbose,
-    #                           args.timelimit, args.edge_success_prob, 
-    #                           args.eef_alt_constraints,
-    #                           args.lp_file, args.relax)
-    # interface = KidneyInterface(cfg, args.formulation) 
-    # actions = interface.get_legal_actions()
-    # actions.display()
+    cfg = kidney_ip.OptConfig(graph.digraph, ndds, args.cycle_cap, 
+                              args.chain_cap, args.verbose,
+                              args.timelimit, args.edge_success_prob, 
+                              args.eef_alt_constraints,
+                              args.lp_file, args.relax)
+    interface = KidneyInterface(cfg, args.formulation) 
+    actions = interface.get_legal_actions()
+    actions.display()

@@ -65,8 +65,20 @@ def read_ndds(lines, digraph):
 
     if lines[edge_count+1].split()[0] != "-1" or len(lines) < edge_count+2:
         raise KidneyReadException("Incorrect edge count")
-
     return ndds
+
+def read_ndd_edges(edges, digraph):
+    ndds = []
+    ndd_count = len(set([e[0] for e in edges]))
+    edge_count = len(edges)
+    ndds = [Ndd() for _ in range(ndd_count)]
+    edge_exists = [[False for v in digraph.vs] for ndd in ndds]
+    for edge in edges:
+        source, target, score = edge
+        ndds[source].add_edge(NddEdge(digraph.vs[target], score))
+        edge_exists[source][target] = True
+    return ndds
+    
 
 class Chain(object):
     """A chain initiated by an NDD.
