@@ -8,18 +8,35 @@ from dynamic_kidney_graph import DynamicKidneyGraph
 
 class KidneyInterface:
 
-    def __init__(self, cfg, formulation):
-        self.digraph = cfg.digraph
+    def __init__(self, graph, cfg, formulation):
+        self.digraph = graph
         self.cfg = cfg
         self.formulation = formulation
 
     def get_legal_actions(self):
         actions = self.solve_kep()
-        cycles = actions.cycles
+        cy = actions.cycles
         cycle_scores = actions.cycle_scores
-        chains = actions.chains
+        ch = actions.chains
         chain_scores = actions.chain_scores
-        return actions
+        cycles = []
+        for c in cy:
+            cycles.append([self.digraph.digraph_id_name[x.id] for x in c])
+        chains = []
+        for c in ch:
+            chain = [self.digraph.ndd_id_name[c.ndd_index]]
+            chain += [self.digraph.digraph_id_name[x] for x in c.vtx_indices]
+            chains.append(chain)
+        return cycles, cycle_scores, chains, chain_scores
+    
+    def take_cycle(self, cycle):
+        # cycle is a list of vertices
+        self.digraph.remove_digraph_vertices(cycle)
+
+    def take_chain(self, chain):
+        # chain starts with a ndd and then digraph vertices
+        self.digraph.remove_ndd_vertices(chain[:1])
+        self.digraph.remove_digraph_vertices(chain[1:])
 
     def solve_kep(self, formulation='picef', use_relabelled=True):
     
@@ -116,6 +133,7 @@ if __name__ == '__main__':
                               args.timelimit, args.edge_success_prob, 
                               args.eef_alt_constraints,
                               args.lp_file, args.relax)
-    interface = KidneyInterface(cfg, args.formulation) 
-    actions = interface.get_legal_actions()
-    actions.display()
+    interface = KidneyInterface(graph, cfg, args.formulation) 
+    cycles, cycle_scores, chains, chain_scores = interface.get_legal_actions()
+    print len(cycles)
+    print len(chains)
