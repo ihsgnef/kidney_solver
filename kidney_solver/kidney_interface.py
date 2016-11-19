@@ -1,19 +1,13 @@
 import argparse
 import time
-<<<<<<< HEAD
 import random
 import copy
-=======
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
 import sys
 import kidney_ndds
 import kidney_ip
 import kidney_utils
 from dynamic_kidney_graph import DynamicKidneyGraph
-<<<<<<< HEAD
 from value_iteration import *
-=======
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
 
 class KidneyInterface:
 
@@ -37,7 +31,6 @@ class KidneyInterface:
             chain += [self.digraph.digraph_id_name[x] for x in c.vtx_indices]
             chains.append(chain)
         return cycles, cycle_scores, chains, chain_scores
-<<<<<<< HEAD
 
     def add_nodes(self, edges):
         vertices = self.digraph.get_vertices_from_edges(edges)
@@ -70,23 +63,15 @@ class KidneyInterface:
             v.append(keys[1])
             self.digraph.remove_digraph_vertices(v)
  
-=======
-    
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
     def take_cycle(self, cycle):
         # cycle is a list of vertices
         self.digraph.remove_digraph_vertices(cycle)
 
     def take_chain(self, chain):
-<<<<<<< HEAD
-
-=======
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
         # chain starts with a ndd and then digraph vertices
         self.digraph.remove_ndd_vertices(chain[:1])
         self.digraph.remove_digraph_vertices(chain[1:])
 
-<<<<<<< HEAD
     def refresh(self):
         ndds = [value for key, value in self.digraph.ndds.items()]
         cfg = kidney_ip.OptConfig(self.digraph.digraph, ndds, args.cycle_cap, 
@@ -98,8 +83,6 @@ class KidneyInterface:
 
 
 
-=======
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
     def solve_kep(self, formulation='picef', use_relabelled=True):
     
         formulations = {
@@ -171,11 +154,8 @@ if __name__ == '__main__':
     args.formulation = args.formulation.lower()
 
     digraph_edges = []
-<<<<<<< HEAD
     digraph_lines = open('example_data/input1').readlines()
-=======
-    digraph_lines = open('example_data/input').readlines()
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
+    #digraph_lines = open('example_data/input').readlines()
     for line in digraph_lines:
         tokens = [x for x in line.split()]
         source = int(tokens[0])
@@ -184,11 +164,8 @@ if __name__ == '__main__':
         digraph_edges.append((source, target, score))
 
     ndd_edges = []
-<<<<<<< HEAD
     ndd_lines = open('example_data/ndds1').readlines()
-=======
-    ndd_lines = open('example_data/ndds').readlines()
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
+   # ndd_lines = open('example_data/ndds').readlines()
     for line in ndd_lines:
         tokens = [x for x in line.split()]
         source = int(tokens[0])
@@ -198,7 +175,6 @@ if __name__ == '__main__':
     graph = DynamicKidneyGraph(digraph_edges, ndd_edges)
     ndds = [value for key, value in graph.ndds.items()]
 
-<<<<<<< HEAD
     add_edges = []
     add_lines = open('example_data/input_add1').readlines()
     for line in add_lines:
@@ -208,15 +184,12 @@ if __name__ == '__main__':
         score = float(tokens[2])
         add_edges.append((source, target, score))
 
-=======
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
     cfg = kidney_ip.OptConfig(graph.digraph, ndds, args.cycle_cap, 
                               args.chain_cap, args.verbose,
                               args.timelimit, args.edge_success_prob, 
                               args.eef_alt_constraints,
                               args.lp_file, args.relax)
     interface = KidneyInterface(graph, cfg, args.formulation) 
-<<<<<<< HEAD
     #interface = copy.deepcopy(interface1)
     
 
@@ -235,12 +208,3 @@ if __name__ == '__main__':
 
         #for i in interface.digraph.digraph.vs:
         #    print i.id
-        
-
-
-    
-=======
-    cycles, cycle_scores, chains, chain_scores = interface.get_legal_actions()
-    print len(cycles)
-    print len(chains)
->>>>>>> 356b5b252e32484b44da81c644125525294353d3
