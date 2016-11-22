@@ -15,10 +15,12 @@ if __name__ == '__main__':
 		list_nodes = []
 		for it in range(num_of_iter):
 			num_of_edges = random.randint(0,num_of_nodes-1)
+
 			if(num_of_edges not in list_nodes):
-				list_nodes.append(num_of_edges)
-				weight = random.random()
-				f.write(str(i) +'	' + str(num_of_edges)+'	'+ str(weight)+ '\n')
+				if num_of_edges != i:
+					list_nodes.append(num_of_edges)
+					weight = random.random()
+					f.write(str(i) +'	' + str(num_of_edges)+'	'+ str(weight)+ '\n')
 
 
 	for i in range(num_of_addnodes):

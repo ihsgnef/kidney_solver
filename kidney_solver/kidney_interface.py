@@ -197,6 +197,8 @@ if __name__ == '__main__':
 
     for it in range(10):
         cycles, cycle_scores, chains, chain_scores = interface.get_legal_actions()
+        print chains
+        print cycles
         #print " print chains", chains
        # print cycles, cycle_scores,chains, chain_scores
         value_iter = ValueIteratonSolver(interface, cycles, cycle_scores, chains, chain_scores, 0.9, 2, add_edges)
