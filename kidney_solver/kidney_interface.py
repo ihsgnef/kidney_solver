@@ -62,6 +62,7 @@ class KidneyInterface:
             v.append(keys[0])
             v.append(keys[1])
             self.digraph.remove_digraph_vertices(v)
+        return v
  
     def take_cycle(self, cycle):
         # cycle is a list of vertices
@@ -154,7 +155,7 @@ if __name__ == '__main__':
     args.formulation = args.formulation.lower()
 
     digraph_edges = []
-    digraph_lines = open('example_data/input1').readlines()
+    digraph_lines = open('example_data/input2').readlines()
     #digraph_lines = open('example_data/input').readlines()
     for line in digraph_lines:
         tokens = [x for x in line.split()]
@@ -164,7 +165,7 @@ if __name__ == '__main__':
         digraph_edges.append((source, target, score))
 
     ndd_edges = []
-    ndd_lines = open('example_data/ndds1').readlines()
+    ndd_lines = open('example_data/ndds2').readlines()
    # ndd_lines = open('example_data/ndds').readlines()
     for line in ndd_lines:
         tokens = [x for x in line.split()]
@@ -176,7 +177,7 @@ if __name__ == '__main__':
     ndds = [value for key, value in graph.ndds.items()]
 
     add_edges = []
-    add_lines = open('example_data/input_add1').readlines()
+    add_lines = open('example_data/input_add2').readlines()
     for line in add_lines:
         tokens = [x for x in line.split()]
         source = int(tokens[0])
@@ -206,7 +207,7 @@ if __name__ == '__main__':
         print "number of iter", it
         print 'cycle:', cycle_action, 'chain:', chain_action
         
-        interface,add_edges = value_iter.transition(interface, cycle_action, chain_action,add_edges)
+        interface,add_edges,removed_nodes = value_iter.transition(interface, cycle_action, chain_action,add_edges)
 
         #for i in interface.digraph.digraph.vs:
         #    print i.id

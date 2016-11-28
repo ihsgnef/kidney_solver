@@ -41,23 +41,64 @@ class ValueIteratonSolver:
       reward += max_chain
     return cycle, chain, reward
 
+  def remove_possible_action(self, cycles, chains, cycle, chain, cycle_scores, chain_scores, removed_nodes ):
+    if len(cycles)>0:
+      cycle_scores.remove(cycle_scores[cycles.index(cycle)])
+      cycles.remove(cycle)
+      for cy in cycles:
+        for vx in cy:
+          if vx in removed_nodes and cy in cycles:
+            cycle_scores.remove(cycle_scores[cycles.index(cy)])
+            cycles.remove(cy)
+            break
+
+
+    if len(chains)>0:
+      chain_scores.remove(chain_scores[chains.index(chain)])
+      chains.remove(chain)
+      for ch in chains:
+        for vx in ch:
+          if vx in removed_nodes:
+            if ch in chains:
+              chain_scores.remove(chain_scores[chains.index(ch)])
+              chains.remove(ch)
+              break
+
+    return cycles, chains, cycle_scores, chain_scores
+
+
+
+
+
+
+
   def get_future_reward(self, cycle, chain):
     future_reward = 0
     new_interface = copy.deepcopy(self.interface)
-    new_interface, new_add_edges = self.transition(new_interface, cycle, chain, self.add_edges)
+    new_cycles = list(self.cycles)
+    new_chains = list(self.chains)
+    new_cycle_scores = list(self.cycle_scores)
+    new_chain_scores = list(self.chain_scores)
+    new_interface, new_add_edges, removed_nodes = self.transition(new_interface, cycle, chain, self.add_edges)
     decay_discount = self.discount
-    #for i in new_interface.digraph.digraph.vs:
-    #	print i.id
- 
-    for it in range(self.iteration):  		
-  		curr_cycles, curr_cycle_scores, curr_chains, curr_chain_scores = new_interface.get_legal_actions()
-  		cycle_action, chain_action, highest_reward = self.get_greedy_action(curr_cycles, curr_cycle_scores, curr_chains, curr_chain_scores)
-  		future_reward = future_reward + decay_discount * highest_reward
-  		new_interface = copy.deepcopy(new_interface)
+    new_cycles, new_chains, new_cycle_scores, new_chain_scores = self.remove_possible_action(new_cycles, new_chains, cycle, chain, new_cycle_scores, new_chain_scores, removed_nodes)
 
-  		new_interface, new_add_edges = self.transition(new_interface, cycle_action, chain_action, new_add_edges)
-  		decay_discount = decay_discount * self.discount
-  		#print it 
+
+ 
+    for it in range(self.iteration):
+      cycle_action, chain_action, highest_reward = self.get_greedy_action(new_cycles, new_cycle_scores, new_chains, new_chain_scores)
+      future_reward = future_reward + decay_discount * highest_reward
+      new_interface, new_add_edges, removed_nodes = self.transition(new_interface, cycle_action, chain_action, new_add_edges)
+      new_cycles, new_chains, new_cycle_scores, new_chain_scores = self.remove_possible_action(new_cycles, new_chains, cycle_action, chain_action, new_cycle_scores, new_chain_scores, removed_nodes)
+      decay_discount = decay_discount * self.discount
+
+    new_cycles, new_cycle_scores, new_chains, new_chain_scores = new_interface.get_legal_actions()
+    action_cycle, action_chain, highest_reward = self.get_greedy_action(new_cycles, new_cycle_scores, new_chains, new_chain_scores)
+    future_reward = future_reward + decay_discount * highest_reward
+
+
+
+
     return future_reward
 
 
@@ -141,9 +182,9 @@ class ValueIteratonSolver:
       new_interface.take_chain(chains)
 
     #for cycle in cycles:
-    new_interface.remove_nodes()
+    removed_nodes = new_interface.remove_nodes()
     new_interface =  new_interface.refresh()
-    return new_interface, new_add_edges
+    return new_interface, new_add_edges, removed_nodes
 
 
 

@@ -5,10 +5,10 @@ if __name__ == '__main__':
 	f = open('input','w')
 	f_add = open('input_add','w')
 	f_ndd = open('ndds','w')
-	num_of_nodes = 20
-	num_of_addnodes = 10
-	num_of_ndd =5
-	num_of_iter =10
+	num_of_nodes = 60
+	num_of_addnodes = 20
+	num_of_ndd =10
+	num_of_iter =35
 	default_weight=1
 
 	for i in range(num_of_nodes):
