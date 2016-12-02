@@ -82,6 +82,7 @@ class DynamicKidneyGraph:
             edge_list.append((target, score))
         return edge_list
 
+
     def get_ndd_edges(self, source):
         '''
         Get all out-going edges from a ndd given its name.
@@ -224,3 +225,10 @@ class DynamicKidneyGraph:
         vertices = set([e[0] for e in digraph_edges])
         vertices.update([e[1] for e in digraph_edges])
         return list(vertices)
+    
+    def find_cycles(self, max_length):
+        cycles_vertices = [c for c in self.digraph.generate_cycles(max_length)]
+        cycles_names = []
+        for cycle in cycles_vertices:
+            cycles_names.append([self.digraph_id_name[x.id] for x in cycle])
+        return cycles_names

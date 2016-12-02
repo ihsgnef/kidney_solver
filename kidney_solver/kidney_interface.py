@@ -193,9 +193,6 @@ if __name__ == '__main__':
     interface = KidneyInterface(graph, cfg, args.formulation) 
     #interface = copy.deepcopy(interface1)
     
-
-
-
     for it in range(10):
         cycles, cycle_scores, chains, chain_scores = interface.get_legal_actions()
         print chains
