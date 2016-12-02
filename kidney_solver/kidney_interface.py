@@ -33,7 +33,7 @@ class KidneyInterface:
         return cycles, cycle_scores, chains, chain_scores
 
     def add_nodes(self, edges):
-        vertices = self.digraph.get_vertices_from_edges(edges)
+        vertices = self.digraph._get_vertices_from_edges(edges)
         if len(vertices) <=2:
             return edges
         v1 = vertices[-1]

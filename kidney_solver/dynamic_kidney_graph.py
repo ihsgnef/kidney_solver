@@ -32,8 +32,7 @@ class DynamicKidneyGraph:
             source, target, score = edge
             source = self.ndd_name_id[source]
             target = self.digraph.vs[self.digraph_name_id[target]]
-            self.ndds[source].add_edge(NddEdge(trg, score))
-    
+            self.ndds[source].add_edge(NddEdge(target, score))
 
     def get_digraph_vertices(self):
         '''
