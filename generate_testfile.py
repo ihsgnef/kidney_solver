@@ -45,11 +45,3 @@ if __name__ == '__main__':
 				weight = random.random()
 				f_ndd.write(str(i) +'	' + str(num_of_edges)+'	'+ str(weight)+ '\n')
 
-
-
-
-
-
-
-
-
