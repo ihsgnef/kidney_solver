@@ -11,7 +11,6 @@ class DynamicKidneyGraph:
             ndd_edges: list of [ndd source, digraph target, score]
         '''
         new_vertices = self._get_vertices_from_edges(digraph_edges)
-        self.vertices = new_vertices
         self.digraph_id_name = dict((i, v) for i, v in enumerate(new_vertices))
         self.digraph_name_id = dict((v, i) for i, v in enumerate(new_vertices))
         self.digraph = Digraph(len(self.digraph_name_id))
@@ -35,13 +34,19 @@ class DynamicKidneyGraph:
             target = self.digraph.vs[self.digraph_name_id[target]]
             self.ndds[source].add_edge(NddEdge(trg, score))
     
-    def _get_vertices_from_edges(self, digraph_edges):
+
+    def get_digraph_vertices(self):
         '''
-        Helper to get all the vertices in a set of edges.
+        Get the list of digraph vertices in names.
         '''
-        vertices = set([e[0] for e in digraph_edges])
-        vertices.update([e[1] for e in digraph_edges])
-        return list(vertices)
+        return self.digraph_name_id.keys()
+
+    def get_ndds(self):
+        '''
+        Get the list of ndds in names.
+        '''
+        return self.ndd_name_id.keys()
+
 
     def digraph_edge_exists(self, source, target):
         '''
@@ -212,3 +217,11 @@ class DynamicKidneyGraph:
         '''
         for ndd in ndds:
             self.ndds.pop(self.ndd_name_id[ndd])
+
+    def _get_vertices_from_edges(self, digraph_edges):
+        '''
+        Helper to get all the vertices in a set of edges.
+        '''
+        vertices = set([e[0] for e in digraph_edges])
+        vertices.update([e[1] for e in digraph_edges])
+        return list(vertices)
