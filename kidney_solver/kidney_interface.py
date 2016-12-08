@@ -6,9 +6,11 @@ import sys
 import kidney_ndds
 import kidney_ip
 import kidney_utils
+from util import Counter
 from dynamic_kidney_graph import DynamicKidneyGraph
-from value_iteration import *
+from new_value_iterator import *
 from graph_features import GraphFeatures
+from node_feature import NodeFeatures
 
 
 class KidneyInterface:
@@ -33,37 +35,62 @@ class KidneyInterface:
             chains.append(chain)
         return cycles, cycle_scores, chains, chain_scores
 
+
+    def find_cycles(self, max_length,vx):
+        cycle_list =[]
+        #list1= []
+        for cycle in self.digraph.find_cycles(max_length):
+            if vx in cycle:
+                cycle_list.append(cycle)
+                continue
+
+
+        return cycle_list
+
     def add_nodes(self, edges):
+        prob = 0.2
         vertices = self.digraph._get_vertices_from_edges(edges)
+        vertice_list = []
+        for vx in vertices:
+            if random.random() < prob:
+                vertice_list.append(vx)
         if len(vertices) <= 2:
             return edges
-        v1 = vertices[-1]
-        v2 = vertices[-2]
         add = []
         edges_copy = copy.deepcopy(edges)
         for edge in edges:
             src = edge[0]
             trg = edge[1]
-            if src == v1 or src == v2:
+            if src in vertice_list:
                 if trg in self.digraph.digraph_name_id.keys():
                     add.append(edge)
                 edges_copy.remove(edge)
-            if trg == v1 or trg == v2:
+            if trg in vertice_list:
                 if src in self.digraph.digraph_name_id.keys():
                     add.append(edge)
-                edges_copy.remove(edge)
+                if edge in edges_copy:
+                    edges_copy.remove(edge)
 
         self.digraph.add_digraph_edges(add)
         return edges_copy
 
     def remove_nodes(self):
-        keys = self.digraph.digraph_name_id.keys()
+        prob = 0.1
         v = []
-        if (len(keys) > 2):
-            v.append(keys[0])
-            v.append(keys[1])
-            self.digraph.remove_digraph_vertices(v)
+        keys = self.digraph.digraph_name_id.keys()
+        for vx in keys:
+            if random.random() < prob:
+                 v.append(vx)
+     
+        self.digraph.remove_digraph_vertices(v)
         return v
+
+    def get_graph_features(self):
+        return GraphFeatures(self.digraph).create_dictionary()
+
+    def get_node_features(self, vx):
+        return NodeFeatures(self.digraph, vx).create_dictionary()
+
 
     def take_cycle(self, cycle):
         # cycle is a list of vertices
@@ -154,7 +181,7 @@ if __name__ == '__main__':
     args.formulation = args.formulation.lower()
 
     digraph_edges = []
-    digraph_lines = open('example_data/input2').readlines()
+    digraph_lines = open('../example_data/input2').readlines()
     # digraph_lines = open('example_data/input').readlines()
     for line in digraph_lines:
         tokens = [x for x in line.split()]
@@ -164,7 +191,7 @@ if __name__ == '__main__':
         digraph_edges.append((source, target, score))
 
     ndd_edges = []
-    ndd_lines = open('example_data/ndds2').readlines()
+    ndd_lines = open('../example_data/ndds2').readlines()
     # ndd_lines = open('example_data/ndds').readlines()
     for line in ndd_lines:
         tokens = [x for x in line.split()]
@@ -176,7 +203,7 @@ if __name__ == '__main__':
     ndds = [value for key, value in graph.ndds.items()]
 
     add_edges = []
-    add_lines = open('example_data/input_add2').readlines()
+    add_lines = open('../example_data/input_add2').readlines()
     for line in add_lines:
         tokens = [x for x in line.split()]
         source = int(tokens[0])
@@ -190,13 +217,14 @@ if __name__ == '__main__':
                               args.eef_alt_constraints,
                               args.lp_file, args.relax)
     interface = KidneyInterface(graph, cfg, args.formulation)
-    # interface = copy.deepcopy(interface1)
+    weight = Counter()
+
 
     for it in range(10):
         cycles, cycle_scores, chains, chain_scores = interface.get_legal_actions()
 
         # print cycles, cycle_scores,chains, chain_scores
-        value_iter = ValueIteratonSolver(interface, cycles, cycle_scores, chains, chain_scores, 0.9, 2, add_edges)
+        value_iter = ValueIteratonSolver(interface, cycles, cycle_scores, chains, chain_scores, 0.9, weight, add_edges)
         cycle_action, chain_action = value_iter.choose_action()
 
         # extract features
@@ -207,7 +235,4 @@ if __name__ == '__main__':
               ". \nThe chains chosen are: " + str(chain_action) + ". \nThe cycles chosen are " + str(cycle_action) +"\n"
 
 
-        interface, add_edges, removed_nodes = value_iter.transition(interface, cycle_action, chain_action, add_edges)
-
-        # for i in interface.digraph.digraph.vs:
-        #    print i.id
+        interface, weight, add_edges, removed_nodes = value_iter.transition(interface, cycle_action, chain_action, add_edges)

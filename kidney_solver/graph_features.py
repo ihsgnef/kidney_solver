@@ -17,7 +17,7 @@ class GraphFeatures:
         self.centrality = 0 # ~~~How would one do this without networkx?~~~
         self.num_vertices = len(self.graph.get_digraph_vertices())
         self.num_cycles = sum(self.calculate_cycles()) # can break this up by amount of each length of cycle as well
-        self.num_chains =  0#self.calculate_chains() # ~~~ need to update to calculate_chains when ndd issue resolved~~~
+        self.num_chains =  0 #self.calculate_chains() # ~~~ need to update to calculate_chains when ndd issue resolved~~~
 
         #populate the features
         self.calculate_degrees()

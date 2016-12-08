@@ -52,9 +52,9 @@ class DynamicKidneyGraph:
         Given names of the source and target vertices, check if edge exists.
         '''
         source = self.digraph_name_id[source]
-        source = self.digraph_name_id[target]
-        return self.digraph.edge_exists(self.digraph.vs[src], 
-                                        self.digraph.vs[trg])
+        target = self.digraph_name_id[target]
+        return self.digraph.edge_exists(self.digraph.vs[source], 
+                                        self.digraph.vs[target])
 
     def ndd_edge_exists(self, source, target):
         '''

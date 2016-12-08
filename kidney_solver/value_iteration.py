@@ -1,4 +1,5 @@
 import copy
+import random
 
 NO_CYCLES = 1
 NO_CHAINS = 2
@@ -51,7 +52,9 @@ class ValueIteratonSolver:
             cycle_scores.remove(cycle_scores[cycles.index(cy)])
             cycles.remove(cy)
             break
-
+        #### weight decay
+      for score in cycle_scores:
+        score = score * random.uniform(0.9,1.0)
 
     if len(chains)>0:
       chain_scores.remove(chain_scores[chains.index(chain)])
@@ -63,6 +66,8 @@ class ValueIteratonSolver:
               chain_scores.remove(chain_scores[chains.index(ch)])
               chains.remove(ch)
               break
+      for score in chain_scores:
+        score = score * random.uniform(0.9,1.0)
 
     return cycles, chains, cycle_scores, chain_scores
 
@@ -96,16 +101,11 @@ class ValueIteratonSolver:
     action_cycle, action_chain, highest_reward = self.get_greedy_action(new_cycles, new_cycle_scores, new_chains, new_chain_scores)
     future_reward = future_reward + decay_discount * highest_reward
 
-
-
-
     return future_reward
 
 
 
   def get_values(self):
-    
-
     if len(self.chains) == 0 and len(self.cycles) ==0:
       return NO_ACTION
 
@@ -185,6 +185,9 @@ class ValueIteratonSolver:
     removed_nodes = new_interface.remove_nodes()
     new_interface =  new_interface.refresh()
     return new_interface, new_add_edges, removed_nodes
+
+
+
 
 
 
