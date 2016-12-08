@@ -17,7 +17,7 @@ class GraphFeatures:
         self.centrality = 0 # ~~~How would one do this without networkx?~~~
         self.num_vertices = len(self.graph.get_digraph_vertices())
         self.num_cycles = sum(self.calculate_cycles()) # can break this up by amount of each length of cycle as well
-        self.num_chains =  0 #self.calculate_chains() # ~~~ need to update to calculate_chains when ndd issue resolved~~~
+        self.num_chains =  0#self.calculate_chains() # ~~~ need to update to calculate_chains when ndd issue resolved~~~
 
         #populate the features
         self.calculate_degrees()
@@ -52,8 +52,10 @@ class GraphFeatures:
                 max_outgoing = outgoing
 
         #set object variables to average and max
-        self.indegrees = avg_incoming/len(self.graph.get_digraph_vertices())
-        self.outdegrees = avg_outgoing / len(self.graph.get_digraph_vertices())
+        if self.graph.get_digraph_vertices() > 0:
+            self.indegrees = avg_incoming/ len(self.graph.get_digraph_vertices())
+            self.outdegrees = avg_outgoing / len(self.graph.get_digraph_vertices())
+
         self.high_indegree = max_incoming
         self.high_outdegree = max_outgoing
 

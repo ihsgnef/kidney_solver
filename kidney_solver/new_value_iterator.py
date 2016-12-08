@@ -12,16 +12,17 @@ HAVE_CY_CH = 0
 
 
 class ValueIteratonSolver:
-    def __init__(self, interface, cycles, cycle_scores, chains, chain_scores, discount, weight, add_edges):
+    def __init__(self, interface, cycles, cycle_scores, chains, chain_scores, discount, curr_iter, weight, add_edges):
         self.interface = interface
         self.cycles = cycles
         self.cycle_scores = cycle_scores
         self.chains = chains
         self.chain_scores = chain_scores
         self.discount = discount
+        self.iter = curr_iter
         self.weight = weight
         self.add_edges = add_edges
-        self.alpha =0.2
+        self.alpha = 0.2
 
 
     def rescale(self, features):
@@ -41,7 +42,6 @@ class ValueIteratonSolver:
         graph_features = self.rescale(graph_features)
 
         return graph_features
-        #return [graph_features, node_features]
 
 
 
@@ -63,7 +63,7 @@ class ValueIteratonSolver:
             new_interface.take_cycle(cycle)
         for chain in chains:
             new_interface.take_chain(chain)
-        removed_nodes = new_interface.remove_nodes()
+        removed_nodes = new_interface.remove_nodes(self.iter)
         new_interface =  new_interface.refresh()
         return new_interface, self.weight, new_add_edges, removed_nodes
 

@@ -47,6 +47,7 @@ class KidneyInterface:
 
         return cycle_list
 
+
     def add_nodes(self, edges):
         prob = 0.2
         vertices = self.digraph._get_vertices_from_edges(edges)
@@ -74,8 +75,11 @@ class KidneyInterface:
         self.digraph.add_digraph_edges(add)
         return edges_copy
 
-    def remove_nodes(self):
-        prob = 0.1
+    def remove_nodes(self, curr_iter):
+        if curr_iter < 4:
+            prob = 0.1 * curr_iter
+        else:
+            prob = 0.3
         v = []
         keys = self.digraph.digraph_name_id.keys()
         for vx in keys:
@@ -224,7 +228,7 @@ if __name__ == '__main__':
         cycles, cycle_scores, chains, chain_scores = interface.get_legal_actions()
 
         # print cycles, cycle_scores,chains, chain_scores
-        value_iter = ValueIteratonSolver(interface, cycles, cycle_scores, chains, chain_scores, 0.9, weight, add_edges)
+        value_iter = ValueIteratonSolver(interface, cycles, cycle_scores, chains, chain_scores, 0.9, it+1, weight, add_edges)
         cycle_action, chain_action = value_iter.choose_action()
 
         # extract features
