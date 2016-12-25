@@ -52,7 +52,7 @@ class GraphFeatures:
                 max_outgoing = outgoing
 
         #set object variables to average and max
-        if self.graph.get_digraph_vertices() > 0:
+        if len(self.graph.get_digraph_vertices()) > 0:
             self.indegrees = avg_incoming/ len(self.graph.get_digraph_vertices())
             self.outdegrees = avg_outgoing / len(self.graph.get_digraph_vertices())
 
